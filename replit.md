@@ -1,6 +1,6 @@
-# [Project name]
+# אתר אישי — מטמיע AI בארגונים
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+אתר תדמית אישי בעברית (RTL) שממצב את בעל האתר כמומחה להטמעת AI בארגונים, אוסף פניות (לידים) דרך טופס יצירת קשר, ומאפשר ניהול הפניות במערכת CRM פנימית.
 
 ## Run & Operate
 
@@ -22,7 +22,10 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/site/` — public Hebrew (RTL) marketing site at `/` and internal lead CRM at `/leads`
+- `artifacts/api-server/src/routes/leads.ts` — lead CRUD + `/leads/stats` endpoints
+- `lib/api-spec/openapi.yaml` — API contract (source of truth; run codegen after edits)
+- `lib/db/src/schema/leads.ts` — `leads` table (Drizzle schema)
 
 ## Architecture decisions
 

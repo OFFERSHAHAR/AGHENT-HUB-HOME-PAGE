@@ -1,0 +1,8 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "VWkO2umk1c533KJAs8zqw"
+uri = "file://artifacts/site/public/hero-bg.png"
+type = "image"
+title = "Abstract tech AI hero background"
