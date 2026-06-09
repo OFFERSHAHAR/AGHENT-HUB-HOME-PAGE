@@ -2,8 +2,15 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { LeadForm } from "@/components/LeadForm";
 import { HeroVisual } from "@/components/HeroVisual";
-import { ArrowLeft, BrainCircuit, Zap, BarChart3, Users, ChevronDown, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, BrainCircuit, Zap, BarChart3, Users, ChevronDown, CheckCircle2, Menu } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetClose,
+  SheetTitle,
+} from "@/components/ui/sheet";
 
 export default function Home() {
   return (
@@ -23,10 +30,51 @@ export default function Home() {
             <a href="#process" className="hover:text-foreground transition-colors">תהליך עבודה</a>
             <a href="#faq" className="hover:text-foreground transition-colors">שאלות נפוצות</a>
           </nav>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <Button asChild className="rounded-full px-6">
               <a href="#contact">צור קשר</a>
             </Button>
+
+            {/* Mobile menu */}
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="md:hidden rounded-full"
+                  aria-label="פתיחת תפריט"
+                >
+                  <Menu className="w-5 h-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-72">
+                <SheetTitle className="text-right mb-8 flex items-center gap-2 text-lg">
+                  <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-primary-foreground">
+                    <BrainCircuit size={20} />
+                  </div>
+                  Agent Hub Guru
+                </SheetTitle>
+                <nav className="flex flex-col gap-2 text-lg font-medium">
+                  <SheetClose asChild>
+                    <a href="#services" className="py-3 px-4 rounded-lg hover:bg-white/5 transition-colors">שירותים</a>
+                  </SheetClose>
+                  <SheetClose asChild>
+                    <a href="#process" className="py-3 px-4 rounded-lg hover:bg-white/5 transition-colors">תהליך עבודה</a>
+                  </SheetClose>
+                  <SheetClose asChild>
+                    <a href="#faq" className="py-3 px-4 rounded-lg hover:bg-white/5 transition-colors">שאלות נפוצות</a>
+                  </SheetClose>
+                  <SheetClose asChild>
+                    <a href="#contact" className="py-3 px-4 rounded-lg hover:bg-white/5 transition-colors">צור קשר</a>
+                  </SheetClose>
+                </nav>
+                <SheetClose asChild>
+                  <Button asChild size="lg" className="w-full mt-8 rounded-full">
+                    <a href="#contact">בואו נדבר</a>
+                  </Button>
+                </SheetClose>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </header>
