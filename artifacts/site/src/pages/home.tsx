@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { LeadForm } from "@/components/LeadForm";
+import { HeroVisual } from "@/components/HeroVisual";
 import { ArrowLeft, BrainCircuit, Zap, BarChart3, Users, ChevronDown, CheckCircle2 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
@@ -38,6 +39,7 @@ export default function Home() {
         </div>
         
         <div className="container mx-auto px-6 relative z-10">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
               <span className="relative flex h-2 w-2">
@@ -66,6 +68,8 @@ export default function Home() {
                 </a>
               </Button>
             </div>
+          </div>
+          <HeroVisual />
           </div>
         </div>
       </section>
