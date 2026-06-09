@@ -1,8 +1,49 @@
 uploads = []
-outputs = []
 
 [[generated]]
 id = "VWkO2umk1c533KJAs8zqw"
 uri = "file://artifacts/site/public/hero-bg.png"
 type = "image"
 title = "Abstract tech AI hero background"
+
+[[outputs]]
+id = "8K_gJ3StNWv8lw_8Xx2Fq"
+uri = "file://brand-assets/logo-mark.svg"
+type = "image"
+title = "לוגו — אייקון (וקטורי SVG, ניתן לעריכה ולכל גודל)"
+
+[[outputs]]
+id = "_XpJPGMj8yHTvr5Pm64db"
+uri = "file://brand-assets/logo-mark.png"
+type = "image"
+title = "לוגו — אייקון (PNG 1024, רקע שקוף)"
+
+[[outputs]]
+id = "qjlKUaQXhzfBC9BHMHRU_"
+uri = "file://brand-assets/avatar.png"
+type = "image"
+title = "תמונת פרופיל לרשתות/וואטסאפ (512×512)"
+
+[[outputs]]
+id = "vVCmXNbB9aMK387wT6Yx4"
+uri = "file://brand-assets/logo-horizontal-onDark.png"
+type = "image"
+title = "לוגו אופקי — לרקע כהה (שקוף)"
+
+[[outputs]]
+id = "ZkzNeq0_xq8lmoB8pFm0N"
+uri = "file://brand-assets/logo-horizontal-onLight.png"
+type = "image"
+title = "לוגו אופקי — לרקע בהיר (שקוף)"
+
+[[outputs]]
+id = "RTddL9d51UT49iTmwA9px"
+uri = "file://brand-assets/logo-stacked-onDark.png"
+type = "image"
+title = "לוגו מאונך עם סלוגן עברי (שקוף)"
+
+[[outputs]]
+id = "2X4xBCLG_Kw2IPtGF1oCJ"
+uri = "file://brand-assets/social-banner.png"
+type = "image"
+title = "באנר לרשתות חברתיות (1200×630)"
