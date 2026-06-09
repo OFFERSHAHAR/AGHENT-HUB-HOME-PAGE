@@ -9,6 +9,7 @@ import {
 } from "@workspace/api-zod";
 import type { Lead } from "@workspace/db";
 import { sendLeadNotification } from "../lib/mailer.js";
+import { requireAdmin } from "../middlewares/adminAuth.js";
 
 const router: IRouter = Router();
 
@@ -26,7 +27,7 @@ function serialize(lead: Lead) {
   };
 }
 
-router.get("/leads/stats", async (_req, res) => {
+router.get("/leads/stats", requireAdmin, async (_req, res) => {
   const rows = await db
     .select({ status: leadsTable.status, count: sql<number>`count(*)::int` })
     .from(leadsTable)
@@ -52,7 +53,7 @@ router.get("/leads/stats", async (_req, res) => {
   });
 });
 
-router.get("/leads", async (_req, res) => {
+router.get("/leads", requireAdmin, async (_req, res) => {
   const rows = await db
     .select()
     .from(leadsTable)
@@ -95,7 +96,7 @@ router.post("/leads", async (req, res) => {
   res.status(201).json(serialize(created));
 });
 
-router.patch("/leads/:id", async (req, res) => {
+router.patch("/leads/:id", requireAdmin, async (req, res) => {
   const params = UpdateLeadParams.safeParse({ id: Number(req.params.id) });
   if (!params.success) {
     res.status(400).json({ error: "Invalid id" });
@@ -131,7 +132,7 @@ router.patch("/leads/:id", async (req, res) => {
   res.json(serialize(updated));
 });
 
-router.delete("/leads/:id", async (req, res) => {
+router.delete("/leads/:id", requireAdmin, async (req, res) => {
   const params = DeleteLeadParams.safeParse({ id: Number(req.params.id) });
   if (!params.success) {
     res.status(400).json({ error: "Invalid id" });

@@ -152,7 +152,7 @@ export const getListLeadsQueryKey = () => {
     }
 
 
-export const getListLeadsQueryOptions = <TData = Awaited<ReturnType<typeof listLeads>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listLeads>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+export const getListLeadsQueryOptions = <TData = Awaited<ReturnType<typeof listLeads>>, TError = ErrorType<Error>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listLeads>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -171,14 +171,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ListLeadsQueryResult = NonNullable<Awaited<ReturnType<typeof listLeads>>>
-export type ListLeadsQueryError = ErrorType<unknown>
+export type ListLeadsQueryError = ErrorType<Error>
 
 
 /**
  * @summary List all leads
  */
 
-export function useListLeads<TData = Awaited<ReturnType<typeof listLeads>>, TError = ErrorType<unknown>>(
+export function useListLeads<TData = Awaited<ReturnType<typeof listLeads>>, TError = ErrorType<Error>>(
   options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listLeads>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
 
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
@@ -444,7 +444,7 @@ export const getGetLeadStatsQueryKey = () => {
     }
 
 
-export const getGetLeadStatsQueryOptions = <TData = Awaited<ReturnType<typeof getLeadStats>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getLeadStats>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+export const getGetLeadStatsQueryOptions = <TData = Awaited<ReturnType<typeof getLeadStats>>, TError = ErrorType<Error>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getLeadStats>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -463,14 +463,14 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type GetLeadStatsQueryResult = NonNullable<Awaited<ReturnType<typeof getLeadStats>>>
-export type GetLeadStatsQueryError = ErrorType<unknown>
+export type GetLeadStatsQueryError = ErrorType<Error>
 
 
 /**
  * @summary Lead funnel summary
  */
 
-export function useGetLeadStats<TData = Awaited<ReturnType<typeof getLeadStats>>, TError = ErrorType<unknown>>(
+export function useGetLeadStats<TData = Awaited<ReturnType<typeof getLeadStats>>, TError = ErrorType<Error>>(
   options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getLeadStats>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
 
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {

@@ -23,9 +23,6 @@ export default function Home() {
             <a href="#faq" className="hover:text-foreground transition-colors">שאלות נפוצות</a>
           </nav>
           <div className="flex items-center gap-4">
-            <Link href="/leads" className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden sm:block">
-              אזור אישי
-            </Link>
             <Button asChild className="rounded-full px-6">
               <a href="#contact">צור קשר</a>
             </Button>

@@ -1,5 +1,14 @@
+import { useEffect, useState } from "react";
 import { Link } from "wouter";
-import { useListLeads, useGetLeadStats, useUpdateLead, useDeleteLead, getListLeadsQueryKey, getGetLeadStatsQueryKey } from "@workspace/api-client-react";
+import {
+  useListLeads,
+  useGetLeadStats,
+  useUpdateLead,
+  useDeleteLead,
+  getListLeadsQueryKey,
+  getGetLeadStatsQueryKey,
+  setAuthTokenGetter,
+} from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { he } from "date-fns/locale";
@@ -19,9 +28,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, ArrowRight, BrainCircuit, Trash2, Mail, Phone, Building } from "lucide-react";
+import { Loader2, ArrowRight, BrainCircuit, Trash2, Mail, Phone, Building, Lock, LogOut } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
   AlertDialog,
@@ -35,12 +44,9 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-const STATUS_LABELS = {
-  new: "חדש",
-  contacted: "נוצר קשר",
-  won: "נסגר בהצלחה",
-  lost: "לא רלוונטי"
-};
+const TOKEN_KEY = "ahgae_admin_token";
+
+setAuthTokenGetter(() => sessionStorage.getItem(TOKEN_KEY));
 
 const STATUS_COLORS = {
   new: "bg-blue-500/20 text-blue-500 border-blue-500/30",
@@ -57,14 +63,62 @@ const SERVICE_LABELS: Record<string, string> = {
   other: "אחר"
 };
 
-export default function Leads() {
-  const { data: leads, isLoading: isLoadingLeads } = useListLeads({ query: { queryKey: getListLeadsQueryKey() } });
-  const { data: stats, isLoading: isLoadingStats } = useGetLeadStats({ query: { queryKey: getGetLeadStatsQueryKey() } });
-  
+function LoginScreen({ onLogin }: { onLogin: (pwd: string) => void }) {
+  const [pwd, setPwd] = useState("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (pwd.trim()) onLogin(pwd.trim());
+  };
+
+  return (
+    <div className="min-h-screen bg-background flex items-center justify-center px-6">
+      <Card className="w-full max-w-sm">
+        <CardHeader className="text-center space-y-3">
+          <div className="mx-auto w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+            <Lock className="w-6 h-6 text-primary" />
+          </div>
+          <CardTitle className="text-xl">כניסת מנהל</CardTitle>
+          <p className="text-sm text-muted-foreground">הזינו את סיסמת הניהול כדי לצפות בפניות</p>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <Input
+              type="password"
+              value={pwd}
+              onChange={(e) => setPwd(e.target.value)}
+              placeholder="סיסמה"
+              autoFocus
+              className="text-center"
+            />
+            <Button type="submit" className="w-full">כניסה</Button>
+            <Button variant="ghost" asChild size="sm" className="w-full">
+              <Link href="/">
+                חזרה לאתר <ArrowRight className="mr-2 w-4 h-4" />
+              </Link>
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+function Dashboard({ onLogout }: { onLogout: () => void }) {
+  const { data: leads, isLoading: isLoadingLeads, error: leadsError } = useListLeads({ query: { queryKey: getListLeadsQueryKey() } });
+  const { data: stats, isLoading: isLoadingStats, error: statsError } = useGetLeadStats({ query: { queryKey: getGetLeadStatsQueryKey() } });
+
   const updateLead = useUpdateLead();
   const deleteLead = useDeleteLead();
   const queryClient = useQueryClient();
   const { toast } = useToast();
+
+  useEffect(() => {
+    const err = (leadsError ?? statsError) as { status?: number } | null;
+    if (err && err.status === 401) {
+      onLogout();
+    }
+  }, [leadsError, statsError, onLogout]);
 
   const handleStatusChange = (id: number, newStatus: "new" | "contacted" | "won" | "lost") => {
     updateLead.mutate({ id, data: { status: newStatus } }, {
@@ -109,11 +163,16 @@ export default function Leads() {
             <BrainCircuit className="text-primary w-5 h-5" />
             מערכת ניהול פניות (CRM)
           </div>
-          <Button variant="ghost" asChild size="sm">
-            <Link href="/">
-              חזרה לאתר <ArrowRight className="ml-2 w-4 h-4" />
-            </Link>
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="sm" onClick={onLogout}>
+              התנתקות <LogOut className="mr-2 w-4 h-4" />
+            </Button>
+            <Button variant="ghost" asChild size="sm">
+              <Link href="/">
+                חזרה לאתר <ArrowRight className="mr-2 w-4 h-4" />
+              </Link>
+            </Button>
+          </div>
         </div>
       </header>
 
@@ -214,8 +273,8 @@ export default function Leads() {
                         {format(new Date(lead.createdAt), "dd MMM yyyy, HH:mm", { locale: he })}
                       </TableCell>
                       <TableCell className="align-top">
-                        <Select 
-                          value={lead.status} 
+                        <Select
+                          value={lead.status}
                           onValueChange={(val: any) => handleStatusChange(lead.id, val)}
                         >
                           <SelectTrigger className={`h-8 border text-xs w-[130px] ${STATUS_COLORS[lead.status]}`}>
@@ -245,7 +304,7 @@ export default function Leads() {
                             </AlertDialogHeader>
                             <AlertDialogFooter className="flex-row gap-2">
                               <AlertDialogCancel className="mt-0">ביטול</AlertDialogCancel>
-                              <AlertDialogAction 
+                              <AlertDialogAction
                                 onClick={() => handleDelete(lead.id)}
                                 className="bg-destructive hover:bg-destructive/90"
                               >
@@ -273,4 +332,33 @@ export default function Leads() {
       </main>
     </div>
   );
+}
+
+export default function Leads() {
+  const [authed, setAuthed] = useState(() => !!sessionStorage.getItem(TOKEN_KEY));
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  const handleLogin = (pwd: string) => {
+    sessionStorage.setItem(TOKEN_KEY, pwd);
+    queryClient.invalidateQueries({ queryKey: getListLeadsQueryKey() });
+    queryClient.invalidateQueries({ queryKey: getGetLeadStatsQueryKey() });
+    setAuthed(true);
+  };
+
+  const handleLogout = () => {
+    const hadToken = !!sessionStorage.getItem(TOKEN_KEY);
+    sessionStorage.removeItem(TOKEN_KEY);
+    queryClient.clear();
+    setAuthed(false);
+    if (hadToken) {
+      toast({ title: "הסיסמה שגויה או שהתנתקת", variant: "destructive" });
+    }
+  };
+
+  if (!authed) {
+    return <LoginScreen onLogin={handleLogin} />;
+  }
+
+  return <Dashboard onLogout={handleLogout} />;
 }
