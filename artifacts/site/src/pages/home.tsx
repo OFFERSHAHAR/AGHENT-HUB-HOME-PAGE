@@ -15,7 +15,7 @@ export default function Home() {
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-primary-foreground">
               <BrainCircuit size={20} />
             </div>
-            עידו כהן <span className="text-muted-foreground font-normal hidden sm:inline">| מטמיע AI בארגונים</span>
+            Agent Hub Guru <span className="text-muted-foreground font-normal hidden sm:inline">| מטמיעי AI בארגונים</span>
           </div>
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
             <a href="#services" className="hover:text-foreground transition-colors">שירותים</a>
@@ -50,11 +50,11 @@ export default function Home() {
               זמין לפרויקטים חדשים
             </div>
             <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.1] mb-6">
-              הופך בינה מלאכותית <br />
+              הופכים בינה מלאכותית <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-l from-primary to-blue-400">לתוצאות עסקיות.</span>
             </h1>
             <p className="text-xl text-muted-foreground mb-10 leading-relaxed max-w-2xl">
-              אל תישארו מאחור. אני מלווה ארגונים בהטמעת טכנולוגיות AI, אוטומציה של תהליכים וחיסכון בזמן יקר – מהאסטרטגיה ועד לביצוע בשטח.
+              אל תישארו מאחור. אנחנו מלווים ארגונים בהטמעת טכנולוגיות AI, אוטומציה של תהליכים וחיסכון בזמן יקר – מהאסטרטגיה ועד לביצוע בשטח.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Button size="lg" className="h-14 px-8 text-lg rounded-full group" asChild>
@@ -146,7 +146,7 @@ export default function Home() {
             <div className="flex-1">
               <h2 className="text-3xl md:text-4xl font-bold mb-6">איך אנחנו עובדים יחד?</h2>
               <p className="text-muted-foreground text-lg mb-8">
-                תהליך העבודה שלי מובנה, שקוף וממוקד בתוצאות. מהרגע הראשון נגדיר יעדים מדידים שיבטיחו החזר השקעה (ROI) מהיר.
+                תהליך העבודה שלנו מובנה, שקוף וממוקד בתוצאות. מהרגע הראשון נגדיר יעדים מדידים שיבטיחו החזר השקעה (ROI) מהיר.
               </p>
               
               <div className="space-y-8">
@@ -217,7 +217,7 @@ export default function Home() {
             <AccordionItem value="item-1">
               <AccordionTrigger className="text-lg">האם אנחנו צריכים ידע טכני מוקדם?</AccordionTrigger>
               <AccordionContent className="text-muted-foreground text-base leading-relaxed">
-                ממש לא. התפקיד שלי הוא להנגיש את הטכנולוגיה ולהפוך אותה לפשוטה לשימוש עבור כל עובד, גם ללא שום רקע טכני.
+                ממש לא. התפקיד שלנו הוא להנגיש את הטכנולוגיה ולהפוך אותה לפשוטה לשימוש עבור כל עובד, גם ללא שום רקע טכני.
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-2">
@@ -276,12 +276,15 @@ export default function Home() {
       {/* Footer */}
       <footer className="py-12 bg-background border-t border-white/5">
         <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-2 font-bold">
-            <BrainCircuit className="text-primary" />
-            עידו כהן
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-2 font-bold">
+              <BrainCircuit className="text-primary" />
+              Agent Hub Guru AI Engineering
+            </div>
+            <span className="text-muted-foreground text-sm">עופר שחר ואור מוסה</span>
           </div>
           <p className="text-muted-foreground text-sm">
-            © {new Date().getFullYear()} כל הזכויות שמורות. נבנה עבור הדגמה.
+            © {new Date().getFullYear()} Agent Hub Guru AI Engineering · כל הזכויות שמורות.
           </p>
           <div className="flex gap-4">
             <Link href="/leads" className="text-muted-foreground hover:text-foreground text-sm transition-colors">
