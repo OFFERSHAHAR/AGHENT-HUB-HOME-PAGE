@@ -82,7 +82,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden border-b border-white/5">
         <div className="absolute inset-0 z-0 opacity-40">
-          <img src="/hero-bg.png" alt="" className="w-full h-full object-cover" />
+          <img src="/hero-bg.png" alt="" aria-hidden="true" decoding="async" fetchPriority="high" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/80 to-background" />
         </div>
         
@@ -96,8 +96,8 @@ export default function Home() {
               </span>
               זמין לפרויקטים חדשים
             </div>
-            <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.1] mb-6">
-              הופכים בינה מלאכותית <br />
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.1] mb-6 text-balance">
+              הופכים בינה מלאכותית{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-l from-primary to-blue-400">לתוצאות עסקיות.</span>
             </h1>
             <p className="text-xl text-muted-foreground mb-10 leading-relaxed max-w-2xl">
@@ -342,6 +342,15 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* Floating mobile CTA */}
+      <a
+        href="#contact"
+        className="md:hidden fixed bottom-5 inset-x-4 z-50 flex items-center justify-center gap-2 h-14 rounded-full bg-primary text-primary-foreground font-bold text-lg shadow-2xl shadow-primary/30 active:scale-[0.98] transition-transform"
+      >
+        בואו נדבר
+        <ArrowLeft className="w-5 h-5" />
+      </a>
     </div>
   );
 }
