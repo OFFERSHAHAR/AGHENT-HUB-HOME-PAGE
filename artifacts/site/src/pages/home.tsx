@@ -12,6 +12,9 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 
+const WHATSAPP_URL =
+  "https://wa.me/972505316380?text=%D7%94%D7%99%D7%99%2C%20%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%A9%D7%9E%D7%95%D7%A2%20%D7%90%D7%99%D7%9A%20%D7%AA%D7%95%D7%9B%D7%9C%D7%95%20%D7%9C%D7%A2%D7%96%D7%95%D7%A8%20%D7%9C%D7%90%D7%A8%D7%92%D7%95%D7%9F%20%D7%A9%D7%9C%D7%99%20%D7%A2%D7%9D%20AI";
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/30">
@@ -343,9 +346,9 @@ export default function Home() {
         </div>
       </footer>
 
-      {/* Floating WhatsApp CTA (mobile) */}
+      {/* Floating WhatsApp CTA — mobile bar */}
       <a
-        href="https://wa.me/972505316380?text=%D7%94%D7%99%D7%99%2C%20%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%A9%D7%9E%D7%95%D7%A2%20%D7%90%D7%99%D7%9A%20%D7%AA%D7%95%D7%9B%D7%9C%D7%95%20%D7%9C%D7%A2%D7%96%D7%95%D7%A8%20%D7%9C%D7%90%D7%A8%D7%92%D7%95%D7%9F%20%D7%A9%D7%9C%D7%99%20%D7%A2%D7%9D%20AI"
+        href={WHATSAPP_URL}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="שיחה בוואטסאפ"
@@ -353,6 +356,17 @@ export default function Home() {
       >
         <WhatsAppIcon className="w-6 h-6" />
         דברו איתנו בוואטסאפ
+      </a>
+
+      {/* Floating WhatsApp FAB — desktop */}
+      <a
+        href={WHATSAPP_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="שיחה בוואטסאפ"
+        className="hidden md:flex fixed bottom-6 left-6 z-50 items-center justify-center w-14 h-14 rounded-full bg-[#25D366] text-white shadow-2xl shadow-[#25D366]/40 hover:scale-105 transition-transform"
+      >
+        <WhatsAppIcon className="w-7 h-7" />
       </a>
     </div>
   );
