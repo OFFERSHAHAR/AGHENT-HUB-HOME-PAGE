@@ -88,6 +88,7 @@ function LoginScreen({ onLogin }: { onLogin: (pwd: string) => void }) {
               value={pwd}
               onChange={(e) => setPwd(e.target.value)}
               placeholder="סיסמה"
+              autoComplete="current-password"
               autoFocus
               className="text-center"
             />
