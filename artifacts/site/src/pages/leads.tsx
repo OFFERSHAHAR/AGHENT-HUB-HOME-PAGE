@@ -63,6 +63,61 @@ const SERVICE_LABELS: Record<string, string> = {
   other: "אחר"
 };
 
+type LeadStatus = "new" | "contacted" | "won" | "lost";
+
+function StatusSelect({
+  value,
+  onChange,
+  className,
+}: {
+  value: LeadStatus;
+  onChange: (val: LeadStatus) => void;
+  className?: string;
+}) {
+  return (
+    <Select value={value} onValueChange={(val) => onChange(val as LeadStatus)}>
+      <SelectTrigger className={`h-8 border text-xs ${STATUS_COLORS[value]} ${className ?? ""}`}>
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent dir="rtl">
+        <SelectItem value="new">חדש</SelectItem>
+        <SelectItem value="contacted">נוצר קשר</SelectItem>
+        <SelectItem value="won">נסגר בהצלחה</SelectItem>
+        <SelectItem value="lost">לא רלוונטי</SelectItem>
+      </SelectContent>
+    </Select>
+  );
+}
+
+function DeleteLeadButton({ name, onConfirm }: { name: string; onConfirm: () => void }) {
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive shrink-0">
+          <Trash2 className="w-4 h-4" />
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent dir="rtl">
+        <AlertDialogHeader>
+          <AlertDialogTitle>למחוק פנייה זו?</AlertDialogTitle>
+          <AlertDialogDescription>
+            פעולה זו תמחק את הפנייה מ-{name} באופן בלתי הפיך.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter className="flex-row gap-2">
+          <AlertDialogCancel className="mt-0">ביטול</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={onConfirm}
+            className="bg-destructive hover:bg-destructive/90"
+          >
+            מחיקה
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+
 function LoginScreen({ onLogin }: { onLogin: (pwd: string) => void }) {
   const [pwd, setPwd] = useState("");
 
@@ -158,26 +213,28 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b border-border bg-card">
-        <div className="container mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="font-bold flex items-center gap-2">
-            <BrainCircuit className="text-primary w-5 h-5" />
-            מערכת ניהול פניות (CRM)
+      <header className="border-b border-border bg-card sticky top-0 z-30">
+        <div className="container mx-auto px-4 md:px-6 h-16 flex items-center justify-between gap-2">
+          <div className="font-bold flex items-center gap-2 text-sm md:text-base min-w-0">
+            <BrainCircuit className="text-primary w-5 h-5 shrink-0" />
+            <span className="truncate">מערכת ניהול פניות (CRM)</span>
           </div>
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" onClick={onLogout}>
-              התנתקות <LogOut className="mr-2 w-4 h-4" />
+          <div className="flex items-center gap-1 shrink-0">
+            <Button variant="ghost" size="sm" onClick={onLogout} className="gap-2 px-2 md:px-3">
+              <LogOut className="w-4 h-4" />
+              <span className="hidden sm:inline">התנתקות</span>
             </Button>
-            <Button variant="ghost" asChild size="sm">
+            <Button variant="ghost" asChild size="sm" className="gap-2 px-2 md:px-3">
               <Link href="/">
-                חזרה לאתר <ArrowRight className="mr-2 w-4 h-4" />
+                <ArrowRight className="w-4 h-4" />
+                <span className="hidden sm:inline">חזרה לאתר</span>
               </Link>
             </Button>
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-6 py-8">
+      <main className="container mx-auto px-4 md:px-6 py-6 md:py-8">
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <Card>
@@ -220,106 +277,138 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
             רשימת הפניות
           </div>
           {leads && leads.length > 0 ? (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow className="hover:bg-transparent">
-                    <TableHead className="text-right">שם הלקוח</TableHead>
-                    <TableHead className="text-right">פרטי התקשרות</TableHead>
-                    <TableHead className="text-right">עניין ב...</TableHead>
-                    <TableHead className="text-right">תאריך</TableHead>
-                    <TableHead className="text-right">סטטוס</TableHead>
-                    <TableHead className="text-right"></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {leads.map((lead) => (
-                    <TableRow key={lead.id}>
-                      <TableCell className="font-medium align-top">
-                        {lead.name}
-                        {lead.company && (
-                          <div className="flex items-center text-xs text-muted-foreground mt-1">
-                            <Building className="w-3 h-3 ml-1" />
-                            {lead.company}
-                          </div>
-                        )}
-                      </TableCell>
-                      <TableCell className="align-top">
-                        <div className="space-y-1 text-sm text-muted-foreground">
-                          {lead.email && (
-                            <div className="flex items-center" dir="ltr">
-                              <span className="truncate max-w-[200px]">{lead.email}</span>
-                              <Mail className="w-3 h-3 ml-2 text-primary" />
-                            </div>
-                          )}
-                          {lead.phone && (
-                            <div className="flex items-center" dir="ltr">
-                              <span>{lead.phone}</span>
-                              <Phone className="w-3 h-3 ml-2 text-primary" />
-                            </div>
-                          )}
-                        </div>
-                      </TableCell>
-                      <TableCell className="align-top max-w-[200px]">
-                        <div className="text-sm truncate">
-                          {lead.serviceInterest ? (SERVICE_LABELS[lead.serviceInterest] || lead.serviceInterest) : "-"}
-                        </div>
-                        {lead.message && (
-                          <div className="text-xs text-muted-foreground mt-1 line-clamp-2" title={lead.message}>
-                            {lead.message}
-                          </div>
-                        )}
-                      </TableCell>
-                      <TableCell className="align-top whitespace-nowrap text-sm text-muted-foreground">
-                        {format(new Date(lead.createdAt), "dd MMM yyyy, HH:mm", { locale: he })}
-                      </TableCell>
-                      <TableCell className="align-top">
-                        <Select
-                          value={lead.status}
-                          onValueChange={(val: any) => handleStatusChange(lead.id, val)}
-                        >
-                          <SelectTrigger className={`h-8 border text-xs w-[130px] ${STATUS_COLORS[lead.status]}`}>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent dir="rtl">
-                            <SelectItem value="new">חדש</SelectItem>
-                            <SelectItem value="contacted">נוצר קשר</SelectItem>
-                            <SelectItem value="won">נסגר בהצלחה</SelectItem>
-                            <SelectItem value="lost">לא רלוונטי</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </TableCell>
-                      <TableCell className="align-top text-left">
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive">
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent dir="rtl">
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>למחוק פנייה זו?</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                פעולה זו תמחק את הפנייה מ-{lead.name} באופן בלתי הפיך.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter className="flex-row gap-2">
-                              <AlertDialogCancel className="mt-0">ביטול</AlertDialogCancel>
-                              <AlertDialogAction
-                                onClick={() => handleDelete(lead.id)}
-                                className="bg-destructive hover:bg-destructive/90"
-                              >
-                                מחיקה
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
-                      </TableCell>
+            <>
+              {/* Desktop table */}
+              <div className="hidden md:block overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="hover:bg-transparent">
+                      <TableHead className="text-right">שם הלקוח</TableHead>
+                      <TableHead className="text-right">פרטי התקשרות</TableHead>
+                      <TableHead className="text-right">עניין ב...</TableHead>
+                      <TableHead className="text-right">תאריך</TableHead>
+                      <TableHead className="text-right">סטטוס</TableHead>
+                      <TableHead className="text-right"></TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+                  </TableHeader>
+                  <TableBody>
+                    {leads.map((lead) => (
+                      <TableRow key={lead.id}>
+                        <TableCell className="font-medium align-top">
+                          {lead.name}
+                          {lead.company && (
+                            <div className="flex items-center text-xs text-muted-foreground mt-1">
+                              <Building className="w-3 h-3 ml-1" />
+                              {lead.company}
+                            </div>
+                          )}
+                        </TableCell>
+                        <TableCell className="align-top">
+                          <div className="space-y-1 text-sm text-muted-foreground">
+                            {lead.email && (
+                              <a href={`mailto:${lead.email}`} className="flex items-center hover:text-foreground" dir="ltr">
+                                <span className="truncate max-w-[200px]">{lead.email}</span>
+                                <Mail className="w-3 h-3 ml-2 text-primary" />
+                              </a>
+                            )}
+                            {lead.phone && (
+                              <a href={`tel:${lead.phone}`} className="flex items-center hover:text-foreground" dir="ltr">
+                                <span>{lead.phone}</span>
+                                <Phone className="w-3 h-3 ml-2 text-primary" />
+                              </a>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell className="align-top max-w-[200px]">
+                          <div className="text-sm truncate">
+                            {lead.serviceInterest ? (SERVICE_LABELS[lead.serviceInterest] || lead.serviceInterest) : "-"}
+                          </div>
+                          {lead.message && (
+                            <div className="text-xs text-muted-foreground mt-1 line-clamp-2" title={lead.message}>
+                              {lead.message}
+                            </div>
+                          )}
+                        </TableCell>
+                        <TableCell className="align-top whitespace-nowrap text-sm text-muted-foreground">
+                          {format(new Date(lead.createdAt), "dd MMM yyyy, HH:mm", { locale: he })}
+                        </TableCell>
+                        <TableCell className="align-top">
+                          <StatusSelect
+                            value={lead.status}
+                            onChange={(val) => handleStatusChange(lead.id, val)}
+                            className="w-[130px]"
+                          />
+                        </TableCell>
+                        <TableCell className="align-top text-left">
+                          <DeleteLeadButton name={lead.name} onConfirm={() => handleDelete(lead.id)} />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+
+              {/* Mobile cards */}
+              <div className="md:hidden divide-y divide-border">
+                {leads.map((lead) => (
+                  <div key={lead.id} className="p-4 space-y-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <div className="font-semibold truncate">{lead.name}</div>
+                        {lead.company && (
+                          <div className="flex items-center text-xs text-muted-foreground mt-0.5">
+                            <Building className="w-3 h-3 ml-1 shrink-0" />
+                            <span className="truncate">{lead.company}</span>
+                          </div>
+                        )}
+                      </div>
+                      <DeleteLeadButton name={lead.name} onConfirm={() => handleDelete(lead.id)} />
+                    </div>
+
+                    {(lead.email || lead.phone) && (
+                      <div className="flex flex-col gap-2 text-sm">
+                        {lead.email && (
+                          <a href={`mailto:${lead.email}`} className="flex items-center gap-2 text-muted-foreground active:text-foreground" dir="ltr">
+                            <Mail className="w-4 h-4 text-primary shrink-0" />
+                            <span className="truncate">{lead.email}</span>
+                          </a>
+                        )}
+                        {lead.phone && (
+                          <a href={`tel:${lead.phone}`} className="flex items-center gap-2 text-muted-foreground active:text-foreground" dir="ltr">
+                            <Phone className="w-4 h-4 text-primary shrink-0" />
+                            <span>{lead.phone}</span>
+                          </a>
+                        )}
+                      </div>
+                    )}
+
+                    {(lead.serviceInterest || lead.message) && (
+                      <div>
+                        {lead.serviceInterest && (
+                          <div className="text-sm font-medium">
+                            {SERVICE_LABELS[lead.serviceInterest] || lead.serviceInterest}
+                          </div>
+                        )}
+                        {lead.message && (
+                          <p className="text-xs text-muted-foreground mt-1">{lead.message}</p>
+                        )}
+                      </div>
+                    )}
+
+                    <div className="flex items-center justify-between gap-3 pt-1">
+                      <StatusSelect
+                        value={lead.status}
+                        onChange={(val) => handleStatusChange(lead.id, val)}
+                        className="w-[140px]"
+                      />
+                      <span className="text-xs text-muted-foreground whitespace-nowrap">
+                        {format(new Date(lead.createdAt), "dd MMM yyyy", { locale: he })}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
           ) : (
             <div className="p-12 text-center text-muted-foreground">
               <div className="mx-auto w-16 h-16 bg-muted/30 rounded-full flex items-center justify-center mb-4">
