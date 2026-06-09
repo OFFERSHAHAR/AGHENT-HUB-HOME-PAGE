@@ -24,6 +24,7 @@
 
 - `artifacts/site/` — public Hebrew (RTL) marketing site at `/` and internal lead CRM at `/leads`
 - `artifacts/api-server/src/routes/leads.ts` — lead CRUD + `/leads/stats` endpoints
+- `artifacts/api-server/src/lib/mailer.ts` — sends a new-lead notification email via the Replit Gmail connector (recipient: `agenthubguru@gmail.com`, override with `LEADS_NOTIFY_EMAIL`)
 - `lib/api-spec/openapi.yaml` — API contract (source of truth; run codegen after edits)
 - `lib/db/src/schema/leads.ts` — `leads` table (Drizzle schema)
 

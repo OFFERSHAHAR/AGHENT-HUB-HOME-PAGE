@@ -1,0 +1,1 @@
+- [Gmail lead notifications](gmail-notifications.md) — new leads email the owner via Replit Gmail connector; base64url raw msg + RFC2047 Hebrew subject; send failures must not lose the lead.

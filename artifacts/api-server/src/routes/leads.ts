@@ -8,6 +8,7 @@ import {
   DeleteLeadParams,
 } from "@workspace/api-zod";
 import type { Lead } from "@workspace/db";
+import { sendLeadNotification } from "../lib/mailer.js";
 
 const router: IRouter = Router();
 
@@ -77,6 +78,19 @@ router.post("/leads", async (req, res) => {
       message: parsed.data.message ?? null,
     })
     .returning();
+
+  try {
+    await sendLeadNotification({
+      name: created.name,
+      email: created.email,
+      phone: created.phone,
+      company: created.company,
+      serviceInterest: created.serviceInterest,
+      message: created.message,
+    });
+  } catch (err) {
+    req.log.error({ err }, "failed to send lead notification email");
+  }
 
   res.status(201).json(serialize(created));
 });
