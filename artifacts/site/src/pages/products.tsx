@@ -8,6 +8,8 @@ import {
   CheckCircle2,
   Menu,
   Sparkles,
+  Code2,
+  Headphones,
 } from "lucide-react";
 import {
   Sheet,
@@ -22,37 +24,81 @@ const WHATSAPP_URL =
 
 const HOME = import.meta.env.BASE_URL;
 
+type Stat = { value: string; label: string; sub: string };
+type FeatureGroup = { num: string; title: string; desc: string };
+type TeamMember = { role: string; name: string; icon: typeof Code2 };
+
 type Product = {
-  badge: string;
   name: string;
+  subtitle: string;
+  badge: string;
   tagline: string;
   description: string;
-  features: string[];
   icon: typeof Waves;
+  logoSrc?: string;
+  imageSrc?: string;
+  imageAlt?: string;
+  tags?: string[];
+  stats?: Stat[];
+  featureGroups?: FeatureGroup[];
+  features?: string[];
+  team?: TeamMember[];
 };
 
 const products: Product[] = [
   {
+    name: "Galileo",
+    subtitle: "מערכת ניהול בריכות מקצועית",
     badge: "בפעולה אצל לקוחות",
-    name: "מערכת חכמה למפעילי בריכות",
-    tagline: "כל הבריכות, הלקוחות והתחזוקה — במקום אחד",
+    tagline: "ניהול בריכות חכם לצוותי שטח",
     description:
-      "פיתחנו מערכת ייעודית למפעילי בריכות שמחליפה את הניירת והאקסלים בכלי דיגיטלי אחד. הצוות מנהל את כל סבב הבריכות מהנייד בשטח, מתעד בדיקות מים ומקבל התראות חכמות על חריגות — בזמן אמת.",
-    features: [
-      "ניהול בריכות ולקוחות במקום מרכזי אחד",
-      "תיעוד בדיקות מים והתראות אוטומטיות על חריגות",
-      "תזכורות וסבב משימות תחזוקה לכל איש צוות",
-      "דוחות ביקור דיגיטליים במקום ניירת",
-      "גישה מלאה מהנייד, בשטח ובזמן אמת",
-    ],
+      "אפליקציית PWA בעברית לניהול פעילות בריכות מקצה לקצה — עם ממשק מנהל וממשק מפעיל שטח. חלוקת עבודה יומית, מדידות מים, דוחות טיפול, מעקב חומרים, התראות, ולקוחות במקום אחד. עבודה מול Google Sheets, התראות ודוחות אוטומטיים ללקוח.",
     icon: Waves,
+    logoSrc: `${HOME}galileo-logo.png`,
+    imageSrc: `${HOME}galileo-mockup.png`,
+    imageAlt: "צילום מסך של אפליקציית Galileo לניהול בריכות",
+    tags: ["PWA", "מובייל", "מנהלים", "שטח"],
+    stats: [
+      { value: "18", label: "משימות היום", sub: "סדר עבודה חי" },
+      { value: "32", label: "לקוחות פעילים", sub: "ניהול לפי יום ומפעיל" },
+      { value: "24/7", label: "PWA", sub: "מותקן כמו אפליקציה" },
+      { value: "94%", label: "התקדמות", sub: "תצוגת מנהל בזמן אמת" },
+    ],
+    featureGroups: [
+      {
+        num: "01",
+        title: "פאנל ניהול",
+        desc: "מחוונים, לקוחות, משתמשים, חלוקת עבודה, משימות, שעות, תקלות ודוחות.",
+      },
+      {
+        num: "02",
+        title: "אפליקציית שטח",
+        desc: "סדר יום למפעיל, מדידות מים, דוח טיפול, צילום, חומרים וסימון ביצוע.",
+      },
+      {
+        num: "03",
+        title: "אוטומציות",
+        desc: "שליחת הודעות WhatsApp, התראות Push, סנכרון נתונים ושמירת cache לעבודה מהירה.",
+      },
+      {
+        num: "04",
+        title: "מוצר מותקן",
+        desc: "PWA עם אייקונים, מסכי פתיחה, רישוי, הרשאות מנהל/מפעיל והתאמה למובייל.",
+      },
+    ],
+    team: [
+      { role: "מפתח ראשי", name: "אור מוסה", icon: Code2 },
+      { role: "צוות טכני ותמיכה", name: "עופר שחר", icon: Headphones },
+    ],
   },
   {
-    badge: "בפעולה אצל לקוחות",
     name: "מערכת ניהול למתחם אירוח",
+    subtitle: "ניהול תפוסה, אורחים וצוות",
+    badge: "בפעולה אצל לקוחות",
     tagline: "ניהול תפוסה, אורחים וצוות — מקצה לקצה",
     description:
       "בנינו מערכת ניהול מלאה למתחמי אירוח שמרכזת את כל התפעול היומיומי: לוח תפוסה, הזמנות, תקשורת עם אורחים וניהול צוות הניקיון והתחזוקה. הכול אוטומטי, מסונכרן ונגיש מכל מכשיר.",
+    icon: Hotel,
     features: [
       "לוח תפוסה וניהול הזמנות של כל היחידות",
       "תקשורת אוטומטית עם אורחים — לפני, בזמן ואחרי השהות",
@@ -60,7 +106,6 @@ const products: Product[] = [
       "מעקב הכנסות ודוחות תפוסה בזמן אמת",
       "תהליכי צ'ק-אין וצ'ק-אאוט חלקים",
     ],
-    icon: Hotel,
   },
 ];
 
@@ -156,7 +201,7 @@ export default function Products() {
       <section className="relative pt-36 pb-16 md:pt-48 md:pb-24 overflow-hidden border-b border-white/5">
         <div className="absolute inset-0 z-0 opacity-30">
           <img
-            src="/hero-bg.png"
+            src={`${HOME}hero-bg.png`}
             alt=""
             aria-hidden="true"
             decoding="async"
@@ -187,63 +232,14 @@ export default function Products() {
       {/* Products */}
       <section className="py-20 md:py-28">
         <div className="container mx-auto px-6">
-          <div className="flex flex-col gap-20 md:gap-28 max-w-5xl mx-auto">
-            {products.map((product, index) => {
-              const Icon = product.icon;
-              const reverse = index % 2 === 1;
-              return (
-                <div
-                  key={product.name}
-                  className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center"
-                >
-                  {/* Visual */}
-                  <div
-                    className={`relative ${reverse ? "lg:order-2" : "lg:order-1"}`}
-                  >
-                    <div className="aspect-[4/3] rounded-3xl border border-border bg-card overflow-hidden relative">
-                      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-blue-500/10" />
-                      <div className="absolute -top-16 -right-16 w-64 h-64 bg-primary/20 rounded-full blur-3xl" />
-                      <div className="relative h-full flex flex-col items-center justify-center gap-5 p-8 text-center">
-                        <div className="w-20 h-20 rounded-2xl bg-primary/15 border border-primary/20 flex items-center justify-center text-primary">
-                          <Icon size={40} />
-                        </div>
-                        <div className="text-lg font-bold">{product.name}</div>
-                        <div className="text-sm text-muted-foreground max-w-xs">
-                          {product.tagline}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Content */}
-                  <div
-                    className={`${reverse ? "lg:order-1" : "lg:order-2"}`}
-                  >
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-medium mb-5">
-                      <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-                      </span>
-                      {product.badge}
-                    </div>
-                    <h2 className="text-2xl md:text-3xl font-bold mb-4">
-                      {product.name}
-                    </h2>
-                    <p className="text-muted-foreground text-lg leading-relaxed mb-6">
-                      {product.description}
-                    </p>
-                    <ul className="space-y-3">
-                      {product.features.map((feature) => (
-                        <li key={feature} className="flex items-start gap-3">
-                          <CheckCircle2 className="text-primary w-5 h-5 flex-shrink-0 mt-0.5" />
-                          <span className="text-foreground/90">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              );
-            })}
+          <div className="flex flex-col gap-16 md:gap-24 max-w-5xl mx-auto">
+            {products.map((product, index) => (
+              <ProductShowcase
+                key={product.name}
+                product={product}
+                reverse={index % 2 === 1}
+              />
+            ))}
           </div>
         </div>
       </section>
@@ -330,6 +326,179 @@ export default function Products() {
         <WhatsAppIcon className="w-7 h-7" />
       </a>
     </div>
+  );
+}
+
+function ProductShowcase({
+  product,
+  reverse,
+}: {
+  product: Product;
+  reverse: boolean;
+}) {
+  const Icon = product.icon;
+  return (
+    <article className="bg-card border border-border rounded-3xl overflow-hidden">
+      <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 p-6 md:p-10">
+        {/* Visual */}
+        <div className={`relative ${reverse ? "lg:order-2" : "lg:order-1"}`}>
+          {product.imageSrc ? (
+            <div className="relative aspect-[4/5] sm:aspect-[16/12] lg:aspect-auto lg:h-full rounded-2xl overflow-hidden bg-gradient-to-br from-slate-100 to-slate-300 flex items-center justify-center p-4">
+              <img
+                src={product.imageSrc}
+                alt={product.imageAlt ?? product.name}
+                loading="lazy"
+                decoding="async"
+                className="max-h-[520px] w-auto h-full object-contain drop-shadow-2xl"
+              />
+            </div>
+          ) : (
+            <div className="aspect-[4/3] lg:h-full rounded-2xl border border-border bg-background/50 overflow-hidden relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-blue-500/10" />
+              <div className="absolute -top-16 -right-16 w-64 h-64 bg-primary/20 rounded-full blur-3xl" />
+              <div className="relative h-full flex flex-col items-center justify-center gap-5 p-8 text-center">
+                <div className="w-20 h-20 rounded-2xl bg-primary/15 border border-primary/20 flex items-center justify-center text-primary">
+                  <Icon size={40} />
+                </div>
+                <div className="text-lg font-bold">{product.name}</div>
+                <div className="text-sm text-muted-foreground max-w-xs">
+                  {product.tagline}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Content */}
+        <div className={`${reverse ? "lg:order-1" : "lg:order-2"}`}>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-medium mb-5">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+            </span>
+            {product.badge}
+          </div>
+
+          <div className="flex items-center gap-3 mb-3">
+            {product.logoSrc && (
+              <img
+                src={product.logoSrc}
+                alt={`${product.name} לוגו`}
+                className="w-12 h-12 rounded-xl object-contain bg-white p-1 border border-border"
+                loading="lazy"
+              />
+            )}
+            <div>
+              <h2 className="text-2xl md:text-3xl font-bold leading-tight">
+                {product.name}
+              </h2>
+              <div className="text-sm text-muted-foreground">
+                {product.subtitle}
+              </div>
+            </div>
+          </div>
+
+          {product.tags && product.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-5">
+              {product.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="text-xs font-medium px-2.5 py-1 rounded-full bg-secondary text-secondary-foreground border border-border"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+
+          <p className="text-muted-foreground text-lg leading-relaxed mb-6">
+            {product.description}
+          </p>
+
+          {product.stats && product.stats.length > 0 && (
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-7">
+              {product.stats.map((stat) => (
+                <div
+                  key={stat.label}
+                  className="rounded-xl bg-background/50 border border-border p-3 text-center"
+                >
+                  <div className="text-xl font-bold text-primary">
+                    {stat.value}
+                  </div>
+                  <div className="text-xs font-medium mt-0.5">{stat.label}</div>
+                  <div className="text-[11px] text-muted-foreground leading-tight mt-0.5">
+                    {stat.sub}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {product.features && (
+            <ul className="space-y-3">
+              {product.features.map((feature) => (
+                <li key={feature} className="flex items-start gap-3">
+                  <CheckCircle2 className="text-primary w-5 h-5 flex-shrink-0 mt-0.5" />
+                  <span className="text-foreground/90">{feature}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+
+      {/* Feature groups (full width) */}
+      {product.featureGroups && product.featureGroups.length > 0 && (
+        <div className="border-t border-border bg-background/30 p-6 md:p-10">
+          <h3 className="text-lg font-bold mb-6">מה המערכת כוללת</h3>
+          <div className="grid sm:grid-cols-2 gap-4">
+            {product.featureGroups.map((group) => (
+              <div
+                key={group.num}
+                className="rounded-2xl border border-border bg-card p-5 flex gap-4"
+              >
+                <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/15 text-primary flex items-center justify-center font-bold text-sm">
+                  {group.num}
+                </div>
+                <div>
+                  <h4 className="font-bold mb-1">{group.title}</h4>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {group.desc}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Team credits */}
+      {product.team && product.team.length > 0 && (
+        <div className="border-t border-border p-6 md:px-10 md:py-6 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8">
+          <span className="text-sm font-medium text-muted-foreground">
+            הצוות מאחורי המוצר
+          </span>
+          <div className="flex flex-wrap gap-x-8 gap-y-3">
+            {product.team.map((member) => {
+              const MemberIcon = member.icon;
+              return (
+                <div key={member.name} className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
+                    <MemberIcon size={18} />
+                  </div>
+                  <div className="leading-tight">
+                    <div className="font-bold text-sm">{member.name}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {member.role}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </article>
   );
 }
 

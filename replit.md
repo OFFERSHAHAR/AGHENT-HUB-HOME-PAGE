@@ -22,7 +22,8 @@
 
 ## Where things live
 
-- `artifacts/site/` — public Hebrew (RTL) marketing site at `/` and internal lead CRM at `/leads`
+- `artifacts/site/` — public Hebrew (RTL) marketing site at `/`, products showcase at `/products`, and internal lead CRM at `/leads`
+- `artifacts/site/src/pages/products.tsx` — "הפיתוחים שלנו" page showing original products in production (Galileo pool-management PWA with real logo/mockup/stats/team; hospitality-venue system as a simpler block). Images live in `artifacts/site/public/galileo-*.png`
 - `artifacts/api-server/src/routes/leads.ts` — lead CRUD + `/leads/stats` endpoints
 - `artifacts/api-server/src/lib/mailer.ts` — sends a new-lead notification email via the Replit Gmail connector (recipient: `agenthubguru@agenthub.guru`, override with `LEADS_NOTIFY_EMAIL`)
 - `artifacts/api-server/src/middlewares/adminAuth.ts` — `requireAdmin` guard protecting all lead read/update/delete + stats endpoints (POST stays public); checks `Authorization: Bearer <ADMIN_PASSWORD secret>` with a constant-time compare + in-memory brute-force throttle

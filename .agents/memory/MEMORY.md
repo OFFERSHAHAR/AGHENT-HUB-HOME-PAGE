@@ -1,2 +1,3 @@
 - [Gmail lead notifications](gmail-notifications.md) — new leads email the owner via Replit Gmail connector; base64url raw msg + RFC2047 Hebrew subject; send failures must not lose the lead.
 - [Admin auth for leads CRM](admin-auth.md) — /leads + admin API gated by shared ADMIN_PASSWORD secret (Bearer + constant-time compare); validate password BEFORE rate-limit so shared proxy IP can't lock out the admin; POST stays public.
+- [Site image assets pattern](site-assets.md) — @assets alias has no TS path map; copy images to artifacts/site/public/ and reference with ${import.meta.env.BASE_URL}name.png for subpath-safe deploys.
