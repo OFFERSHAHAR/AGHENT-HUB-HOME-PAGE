@@ -2,7 +2,20 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { LeadForm } from "@/components/LeadForm";
 import { HeroVisual } from "@/components/HeroVisual";
-import { ArrowLeft, BrainCircuit, Zap, BarChart3, Users, ChevronDown, CheckCircle2, Menu } from "lucide-react";
+import {
+  ArrowLeft,
+  BrainCircuit,
+  CheckCircle2,
+  Menu,
+  Bot,
+  Workflow,
+  Database,
+  Plug,
+  Megaphone,
+  ClipboardList,
+  Gauge,
+  ShieldCheck,
+} from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import {
   Sheet,
@@ -14,6 +27,149 @@ import {
 
 const WHATSAPP_URL =
   "https://wa.me/972505316380?text=%D7%94%D7%99%D7%99%2C%20%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%A9%D7%9E%D7%95%D7%A2%20%D7%90%D7%99%D7%9A%20%D7%AA%D7%95%D7%9B%D7%9C%D7%95%20%D7%9C%D7%A2%D7%96%D7%95%D7%A8%20%D7%9C%D7%90%D7%A8%D7%92%D7%95%D7%9F%20%D7%A9%D7%9C%D7%99%20%D7%A2%D7%9D%20AI";
+
+type Service = {
+  icon: typeof BrainCircuit;
+  title: string;
+  items: string[];
+};
+
+const services: Service[] = [
+  {
+    icon: BrainCircuit,
+    title: "אפיון והטמעת AI בעסק",
+    items: [
+      "מיפוי תהליכים וזיהוי משימות לאוטומציה",
+      "תוכנית הטמעה לפי יעדים עסקיים",
+      "בחירת הכלים הנכונים (ChatGPT, Claude, Make, n8n ועוד)",
+      "הדרכת צוותים לעבודה נכונה עם AI",
+    ],
+  },
+  {
+    icon: Bot,
+    title: "פיתוח סוכני AI מותאמים אישית",
+    items: [
+      "סוכן שירות לקוחות מבוסס מאגר ידע",
+      "סוכן מכירות שמסנן לידים ומעביר לנציג",
+      "סוכן תפעולי: CRM, מיילים, דוחות וקריאות",
+      "סוכנים רב-שלביים שמבצעים תהליך שלם",
+    ],
+  },
+  {
+    icon: Workflow,
+    title: "אוטומציות עסקיות עם AI",
+    items: [
+      "חיבור טפסים, מייל, WhatsApp, CRM, Sheets, Notion, Monday",
+      "סיכום אוטומטי של פניות לקוחות",
+      "ניתוח לידים והקצאת ציון איכות",
+      "הפקת דוחות יומיים ושבועיים",
+    ],
+  },
+  {
+    icon: Database,
+    title: "מאגרי ידע וצ'אטבוטים חכמים",
+    items: [
+      "ארגון מסמכים, נהלים, FAQ וקטלוגים",
+      "בוט שעונה רק לפי מידע מאושר של העסק",
+      "חיפוש חכם במסמכים פנימיים",
+      "הסלמה אוטומטית לנציג אנושי בחוסר ודאות",
+    ],
+  },
+  {
+    icon: Plug,
+    title: "אינטגרציות למערכות קיימות",
+    items: [
+      "חיבור ל-CRM, ERP, אתרים, טפסים ומוקדים",
+      "עבודה עם API ובניית Webhooks",
+      "סנכרון מידע בין מערכות",
+      "ממשקים פנימיים פשוטים לניהול הסוכנים",
+    ],
+  },
+  {
+    icon: Megaphone,
+    title: "AI לתוכן, שיווק ומכירות",
+    items: [
+      "יצירת פוסטים, מודעות, מיילים ודפי נחיתה",
+      "ניתוח שיחות מכירה והפקת תובנות",
+      "תסריטי שיחה מותאמים לקהלי יעד",
+      "אוטומציה של Follow-up ללידים",
+    ],
+  },
+  {
+    icon: ClipboardList,
+    title: "AI לתפעול וניהול ידע",
+    items: [
+      "סיכום פגישות והפקת משימות אוטומטית",
+      "יצירת נהלים מתוך שיחות ומסמכים",
+      "חיפוש פנימי חכם לעובדים",
+      "דוחות מנהלים בשפה טבעית",
+    ],
+  },
+  {
+    icon: Gauge,
+    title: "בקרה, אבטחה ושיפור מתמשך",
+    items: [
+      "הגדרת הרשאות וגישה למידע",
+      "ניטור ביצועי הסוכן ושביעות רצון",
+      "שיפור פרומפטים, תהליכים ומודלים לאורך זמן",
+      "סביבת בדיקות לפני עלייה ללקוח",
+    ],
+  },
+  {
+    icon: ShieldCheck,
+    title: "סוכני AI לאבטחת מידע ומערכות",
+    items: [
+      "ניטור והתראות מ-SIEM, Firewall, EDR וענן",
+      "Triage וסיווג אירועי אבטחה לפי חומרה",
+      "ניתוח לוגים וזיהוי חריגות וכשלים",
+      "ניהול הרשאות וזהויות + Compliance (ISO 27001, SOC 2, GDPR)",
+    ],
+  },
+];
+
+type Package = {
+  name: string;
+  tagline: string;
+  items: string[];
+  featured?: boolean;
+};
+
+const packages: Package[] = [
+  {
+    name: "חבילת בסיס",
+    tagline: "אבחון והטמעה ראשונית",
+    items: [
+      "פגישת אפיון",
+      "מיפוי 3-5 תהליכים לאוטומציה",
+      "בניית סוכן AI בסיסי אחד",
+      "הדרכה קצרה לצוות",
+      "מסמך המלצות להמשך",
+    ],
+  },
+  {
+    name: "חבילת צמיחה",
+    tagline: "סוכן + אוטומציות",
+    featured: true,
+    items: [
+      "אפיון מלא לתהליך עסקי",
+      "בניית סוכן AI מותאם",
+      "חיבור למערכת אחת או שתיים (CRM, WhatsApp, Sheets, מייל)",
+      "בניית מאגר ידע",
+      "בדיקות, הדרכה וליווי ראשוני",
+    ],
+  },
+  {
+    name: "חבילת פרימיום",
+    tagline: "מערכת AI עסקית",
+    items: [
+      "מספר סוכנים לפי מחלקות",
+      "אינטגרציות למערכות קיימות",
+      "דשבורד ניהול ובקרה",
+      "אוטומציות מורכבות מקצה לקצה",
+      "ליווי חודשי, שיפור ביצועים ותמיכה",
+    ],
+  },
+];
 
 export default function Home() {
   return (
@@ -163,33 +319,82 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-card border border-border p-8 rounded-2xl hover:border-primary/50 transition-colors">
-              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-6 text-primary">
-                <BrainCircuit size={24} />
-              </div>
-              <h3 className="text-xl font-bold mb-3">אסטרטגיית AI וייעוץ</h3>
-              <p className="text-muted-foreground leading-relaxed">
-                מיפוי תהליכי העבודה בארגון, זיהוי צווארי בקבוק, ובניית מפת דרכים ברורה להטמעת פתרונות בינה מלאכותית.
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {services.map((service) => {
+              const Icon = service.icon;
+              return (
+                <div
+                  key={service.title}
+                  className="bg-card border border-border p-7 rounded-2xl hover:border-primary/50 transition-colors flex flex-col"
+                >
+                  <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-5 text-primary flex-shrink-0">
+                    <Icon size={24} />
+                  </div>
+                  <h3 className="text-lg font-bold mb-4">{service.title}</h3>
+                  <ul className="space-y-2.5">
+                    {service.items.map((item) => (
+                      <li key={item} className="flex items-start gap-2.5 text-sm">
+                        <CheckCircle2 className="text-primary w-4 h-4 flex-shrink-0 mt-0.5" />
+                        <span className="text-muted-foreground leading-relaxed">
+                          {item}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Service packages */}
+          <div className="mt-20">
+            <div className="text-center max-w-2xl mx-auto mb-12">
+              <h3 className="text-2xl md:text-3xl font-bold mb-4">
+                חבילות שירות לבחירתכם
+              </h3>
+              <p className="text-muted-foreground text-lg">
+                מנקודת ההתחלה ועד מערכת AI עסקית מלאה — בונים יחד את החבילה שמתאימה
+                לקצב ולצרכים שלכם.
               </p>
             </div>
-            <div className="bg-card border border-border p-8 rounded-2xl hover:border-primary/50 transition-colors">
-              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-6 text-primary">
-                <Zap size={24} />
-              </div>
-              <h3 className="text-xl font-bold mb-3">אוטומציה וייעול</h3>
-              <p className="text-muted-foreground leading-relaxed">
-                חיבור בין מערכות, סוכני AI (Agents) אוטונומיים, ואוטומציה של משימות שגרתיות שגוזלות זמן יקר מהצוות.
-              </p>
-            </div>
-            <div className="bg-card border border-border p-8 rounded-2xl hover:border-primary/50 transition-colors">
-              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-6 text-primary">
-                <Users size={24} />
-              </div>
-              <h3 className="text-xl font-bold mb-3">הכשרת צוותים</h3>
-              <p className="text-muted-foreground leading-relaxed">
-                סדנאות מעשיות לצוותי הנהלה ועובדים: איך להשתמש בכלים כמו ChatGPT, Claude ו-Midjourney בצורה מקצועית.
-              </p>
+
+            <div className="grid md:grid-cols-3 gap-6 items-start">
+              {packages.map((pkg) => (
+                <div
+                  key={pkg.name}
+                  className={`rounded-2xl p-8 flex flex-col h-full border transition-colors ${
+                    pkg.featured
+                      ? "bg-primary/10 border-primary/40 md:scale-[1.03] shadow-xl shadow-primary/10"
+                      : "bg-card border-border hover:border-primary/50"
+                  }`}
+                >
+                  {pkg.featured && (
+                    <span className="self-start inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary text-primary-foreground text-xs font-bold mb-4">
+                      הכי פופולרי
+                    </span>
+                  )}
+                  <h4 className="text-xl font-bold mb-1">{pkg.name}</h4>
+                  <p className="text-primary font-medium mb-6">{pkg.tagline}</p>
+                  <ul className="space-y-3 mb-8 flex-1">
+                    {pkg.items.map((item) => (
+                      <li key={item} className="flex items-start gap-2.5">
+                        <CheckCircle2 className="text-primary w-5 h-5 flex-shrink-0 mt-0.5" />
+                        <span className="text-foreground/90 leading-relaxed">
+                          {item}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Button
+                    asChild
+                    size="lg"
+                    variant={pkg.featured ? "default" : "outline"}
+                    className="w-full rounded-full"
+                  >
+                    <a href="#contact">לפרטים והצעת מחיר</a>
+                  </Button>
+                </div>
+              ))}
             </div>
           </div>
         </div>
