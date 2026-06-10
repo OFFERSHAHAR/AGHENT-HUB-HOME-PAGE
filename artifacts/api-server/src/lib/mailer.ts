@@ -7,7 +7,7 @@ import { LOGO_EMAIL_BASE64 } from "./logoEmail.js";
 
 const connectors = new ReplitConnectors();
 
-const NOTIFY_EMAIL = process.env.LEADS_NOTIFY_EMAIL ?? "agenthubguru@gmail.com";
+const NOTIFY_EMAIL = process.env.LEADS_NOTIFY_EMAIL ?? "agenthubguru@agenthub.guru";
 
 export type LeadNotification = {
   name: string;
