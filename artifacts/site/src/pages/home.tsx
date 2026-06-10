@@ -30,6 +30,7 @@ export default function Home() {
           </div>
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
             <a href="#services" className="hover:text-foreground transition-colors">שירותים</a>
+            <Link href="/products" className="hover:text-foreground transition-colors">הפיתוחים שלנו</Link>
             <a href="#process" className="hover:text-foreground transition-colors">תהליך עבודה</a>
             <a href="#faq" className="hover:text-foreground transition-colors">שאלות נפוצות</a>
           </nav>
@@ -60,6 +61,9 @@ export default function Home() {
                 <nav className="flex flex-col gap-2 text-lg font-medium">
                   <SheetClose asChild>
                     <a href="#services" className="py-3 px-4 rounded-lg hover:bg-white/5 transition-colors">שירותים</a>
+                  </SheetClose>
+                  <SheetClose asChild>
+                    <Link href="/products" className="py-3 px-4 rounded-lg hover:bg-white/5 transition-colors">הפיתוחים שלנו</Link>
                   </SheetClose>
                   <SheetClose asChild>
                     <a href="#process" className="py-3 px-4 rounded-lg hover:bg-white/5 transition-colors">תהליך עבודה</a>
