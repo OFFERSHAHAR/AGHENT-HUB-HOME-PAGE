@@ -1,13 +1,10 @@
-// Gmail integration (Replit connector "google-mail").
-// Sends a notification email for each new lead via the Gmail API proxy,
-// and an automatic confirmation reply to the customer who submitted the form.
-import { ReplitConnectors } from "@replit/connectors-sdk";
+import nodemailer from "nodemailer";
 import { logger } from "./logger.js";
 import { LOGO_EMAIL_BASE64 } from "./logoEmail.js";
 
-const connectors = new ReplitConnectors();
-
-const NOTIFY_EMAIL = process.env.LEADS_NOTIFY_EMAIL ?? "agenthubguru@agenthub.guru";
+const NOTIFY_EMAIL = process.env.LEADS_NOTIFY_EMAIL ?? "agenthubguru@gmail.com";
+const SMTP_USER = process.env.SMTP_USER ?? "";
+const SMTP_PASS = process.env.SMTP_PASS ?? "";
 
 export type LeadNotification = {
   name: string;
@@ -18,21 +15,14 @@ export type LeadNotification = {
   message: string | null;
 };
 
-function encodeHeader(value: string): string {
-  return `=?UTF-8?B?${Buffer.from(value, "utf-8").toString("base64")}?=`;
-}
-
-function toBase64Url(input: string): string {
-  return Buffer.from(input, "utf-8")
-    .toString("base64")
-    .replace(/\+/g, "-")
-    .replace(/\//g, "_")
-    .replace(/=+$/, "");
-}
-
-// Wrap base64 to 76-char lines (RFC 2045) so MIME parts stay within line-length limits.
-function wrap76(b64: string): string {
-  return b64.replace(/\s+/g, "").replace(/(.{76})/g, "$1\r\n");
+function getTransporter() {
+  if (!SMTP_USER || !SMTP_PASS) {
+    return null;
+  }
+  return nodemailer.createTransport({
+    service: "gmail",
+    auth: { user: SMTP_USER, pass: SMTP_PASS },
+  });
 }
 
 function escapeHtml(value: string): string {
@@ -44,99 +34,12 @@ function escapeHtml(value: string): string {
     .replace(/'/g, "&#39;");
 }
 
-type InlineImage = { cid: string; base64: string; mime: string; filename: string };
-
-async function sendGmail(opts: {
-  to: string;
-  subject: string;
-  body: string;
-  html?: string;
-  replyTo?: string;
-  inlineImage?: InlineImage;
-}): Promise<void> {
-  const topHeaders = [
-    `To: ${opts.to}`,
-    `Subject: ${encodeHeader(opts.subject)}`,
-    "MIME-Version: 1.0",
-  ];
-  if (opts.replyTo) {
-    topHeaders.push(`Reply-To: ${opts.replyTo}`);
-  }
-
-  let message: string;
-
-  if (opts.html) {
-    const altBoundary = `alt_${Date.now().toString(36)}`;
-    const textPart = [
-      `--${altBoundary}`,
-      'Content-Type: text/plain; charset="UTF-8"',
-      "Content-Transfer-Encoding: base64",
-      "",
-      wrap76(Buffer.from(opts.body, "utf-8").toString("base64")),
-    ];
-    const htmlPart = [
-      `--${altBoundary}`,
-      'Content-Type: text/html; charset="UTF-8"',
-      "Content-Transfer-Encoding: base64",
-      "",
-      wrap76(Buffer.from(opts.html, "utf-8").toString("base64")),
-    ];
-    const altSection = [
-      `Content-Type: multipart/alternative; boundary="${altBoundary}"`,
-      "",
-      ...textPart,
-      ...htmlPart,
-      `--${altBoundary}--`,
-    ];
-
-    if (opts.inlineImage) {
-      const relBoundary = `rel_${Date.now().toString(36)}`;
-      message = [
-        ...topHeaders,
-        `Content-Type: multipart/related; boundary="${relBoundary}"`,
-        "",
-        `--${relBoundary}`,
-        ...altSection,
-        `--${relBoundary}`,
-        `Content-Type: ${opts.inlineImage.mime}`,
-        "Content-Transfer-Encoding: base64",
-        `Content-ID: <${opts.inlineImage.cid}>`,
-        `Content-Disposition: inline; filename="${opts.inlineImage.filename}"`,
-        "",
-        wrap76(opts.inlineImage.base64),
-        `--${relBoundary}--`,
-      ].join("\r\n");
-    } else {
-      message = [...topHeaders, ...altSection].join("\r\n");
-    }
-  } else {
-    message = [
-      ...topHeaders,
-      'Content-Type: text/plain; charset="UTF-8"',
-      "Content-Transfer-Encoding: base64",
-      "",
-      wrap76(Buffer.from(opts.body, "utf-8").toString("base64")),
-    ].join("\r\n");
-  }
-
-  const response = await connectors.proxy(
-    "google-mail",
-    "/gmail/v1/users/me/messages/send",
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ raw: toBase64Url(message) }),
-    },
-  );
-
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`Gmail send failed: ${response.status} ${text}`);
-  }
-}
-
 export async function sendLeadNotification(lead: LeadNotification): Promise<void> {
-  const subject = `פנייה חדשה מהאתר: ${lead.name}`;
+  const transporter = getTransporter();
+  if (!transporter) {
+    logger.warn("SMTP credentials not configured — skipping lead notification email");
+    return;
+  }
 
   const fields: Array<[string, string | null]> = [
     ["שם", lead.name],
@@ -147,7 +50,7 @@ export async function sendLeadNotification(lead: LeadNotification): Promise<void
     ["הודעה", lead.message],
   ];
 
-  const body = [
+  const textBody = [
     "התקבלה פנייה חדשה דרך טופס יצירת הקשר באתר:",
     "",
     ...fields
@@ -156,24 +59,31 @@ export async function sendLeadNotification(lead: LeadNotification): Promise<void
     "",
     "—",
     "Agent Hub Guru AI Engineering",
-  ].join("\r\n");
+  ].join("\n");
 
-  await sendGmail({ to: NOTIFY_EMAIL, subject, body });
+  await transporter.sendMail({
+    from: `"Agent Hub Guru" <${SMTP_USER}>`,
+    to: NOTIFY_EMAIL,
+    subject: `פנייה חדשה מהאתר: ${lead.name}`,
+    text: textBody,
+  });
+
   logger.info({ recipient: NOTIFY_EMAIL }, "lead notification email sent");
 }
 
-// Automatic confirmation reply sent to the customer who submitted the form.
-// Replies route back to the business inbox via Reply-To.
 export async function sendLeadAutoReply(lead: LeadNotification): Promise<void> {
-  if (!lead.email || lead.email.trim() === "") {
+  if (!lead.email || lead.email.trim() === "") return;
+
+  const transporter = getTransporter();
+  if (!transporter) {
+    logger.warn("SMTP credentials not configured — skipping auto-reply email");
     return;
   }
 
-  const subject = "קיבלנו את פנייתכם — Agent Hub Guru AI Engineering";
-
   const greetingName = lead.name?.trim() ? lead.name.trim() : "שלום";
+  const safeName = escapeHtml(greetingName);
 
-  const body = [
+  const textBody = [
     `שלום ${greetingName},`,
     "",
     "תודה שפניתם אלינו! קיבלנו את פנייתכם ואנחנו שמחים על ההתעניינות.",
@@ -185,10 +95,9 @@ export async function sendLeadAutoReply(lead: LeadNotification): Promise<void> {
     "נתראה בקרוב,",
     "עופר שחר ואור מוסה",
     "Agent Hub Guru AI Engineering",
-  ].join("\r\n");
+  ].join("\n");
 
-  const safeName = escapeHtml(greetingName);
-  const html = `<!DOCTYPE html>
+  const htmlBody = `<!DOCTYPE html>
 <html dir="rtl" lang="he">
 <head>
 <meta charset="UTF-8" />
@@ -227,18 +136,21 @@ export async function sendLeadAutoReply(lead: LeadNotification): Promise<void> {
 </body>
 </html>`;
 
-  await sendGmail({
+  await transporter.sendMail({
+    from: `"Agent Hub Guru" <${SMTP_USER}>`,
     to: lead.email,
-    subject,
-    body,
-    html,
     replyTo: NOTIFY_EMAIL,
-    inlineImage: {
-      cid: "ahg-logo",
-      base64: LOGO_EMAIL_BASE64,
-      mime: "image/png",
-      filename: "agent-hub-guru.png",
-    },
+    subject: "קיבלנו את פנייתכם — Agent Hub Guru AI Engineering",
+    text: textBody,
+    html: htmlBody,
+    attachments: [
+      {
+        filename: "agent-hub-guru.png",
+        content: Buffer.from(LOGO_EMAIL_BASE64, "base64"),
+        cid: "ahg-logo",
+      },
+    ],
   });
+
   logger.info({ recipient: lead.email }, "lead auto-reply email sent");
 }

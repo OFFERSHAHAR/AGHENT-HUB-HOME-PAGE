@@ -8,7 +8,7 @@ import {
   DeleteLeadParams,
 } from "@workspace/api-zod";
 import type { Lead } from "@workspace/db";
-import { sendLeadNotification } from "../lib/mailer.js";
+import { sendLeadNotification, sendLeadAutoReply } from "../lib/mailer.js";
 import { requireAdmin } from "../middlewares/adminAuth.js";
 
 const router: IRouter = Router();
@@ -93,6 +93,12 @@ router.post("/leads", async (req, res) => {
     await sendLeadNotification(leadPayload);
   } catch (err) {
     req.log.error({ err }, "failed to send lead notification email");
+  }
+
+  try {
+    await sendLeadAutoReply(leadPayload);
+  } catch (err) {
+    req.log.error({ err }, "failed to send lead auto-reply email");
   }
 
   res.status(201).json(serialize(created));
