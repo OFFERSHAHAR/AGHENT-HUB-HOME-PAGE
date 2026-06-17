@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Send, Bot, User, CheckCircle, Loader2 } from "lucide-react";
-import { getBaseUrl } from "@workspace/api-client-react";
+const API_BASE = import.meta.env.VITE_API_URL ?? "";
 
 interface Message {
   role: "user" | "assistant";
@@ -44,7 +44,7 @@ export default function SpecAgent() {
   async function startConversation() {
     setStarted(true);
     setLoading(true);
-    const res = await fetch(`${getBaseUrl()}/api/spec-agent/message`, {
+    const res = await fetch(`${API_BASE}/api/spec-agent/message`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ messages: [], systemPrompt: SYSTEM_PROMPT }),
@@ -63,7 +63,7 @@ export default function SpecAgent() {
     setInput("");
     setLoading(true);
 
-    const res = await fetch(`${getBaseUrl()}/api/spec-agent/message`, {
+    const res = await fetch(`${API_BASE}/api/spec-agent/message`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ messages: updated, systemPrompt: SYSTEM_PROMPT }),
@@ -81,7 +81,7 @@ export default function SpecAgent() {
       .map((m) => `${m.role === "user" ? "לקוח" : "סוכן"}: ${m.content}`)
       .join("\n\n");
 
-    await fetch(`${getBaseUrl()}/api/spec-agent/submit`, {
+    await fetch(`${API_BASE}/api/spec-agent/submit`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ conversation: messages, summary }),
